@@ -40,11 +40,16 @@ def extraeinfo(f):
             retiva += float(t['importe'])
 
     tc = float(comprobante.get('tipocambio',1.))
-    resumen = "{0} \t {1} \t {2} \t {3} \t {4} \t {5} \t {6} \t{7} \t {8} \t {9} \t {10}".format(\
-                emisor['nombre'].encode('utf8'),emisor['rfc'].encode('utf8'),tfd['uuid'].encode('utf8'), \
-                receptor['nombre'].encode('utf8'),receptor['rfc'].encode('utf8'), \
-                comprobante['total'].encode('utf8'), \
-                str(ieps),str(iva),str(retiva),str(retisr), str(tc))
+    resumen = "{0} \t {1} \t {2} \t {3} \t {4} \t {5} \t {6} \t{7} \t {8} \t {9} \t {10} \t {11} \t {12}".format(\
+               emisor['nombre'].encode('utf8'), \
+               comprobante['fecha'].encode('utf8'), \
+               emisor['rfc'].encode('utf8'), \
+               tfd['uuid'].encode('utf8'), \
+               receptor['nombre'].encode('utf8'), \
+               receptor['rfc'].encode('utf8'), \
+               comprobante['subtotal'].encode('utf8'), \
+               str(ieps),str(iva),str(retiva),str(retisr), str(tc), \
+               comprobante['total'].encode('utf8'))
     return resumen
 
 
@@ -52,8 +57,8 @@ L = glob.glob('./*.xml')
 #R = [ patt[1:].strip().lower() for patt in re.findall('(<cfdi:[A-z]*\s|<tfd:[A-z]*\s)',fxml)]
 
 if __name__=='__main__':
-    print("Emisor \t Emisor_RFC \t Folio fiscal \t Receptor \t Receptor_RFC \t Total \t IEPS \t IVA \t Ret IVA \t Ret ISR \t TC")
-    for f in L[:15]:
+    print("Emisor \t Fecha_CFDI \t RFC_Emisor \t Folio_fiscal \t Receptor \t RFC_Receptor \t Subtotal \t  IEPS \t IVA \t Ret IVA \t Ret ISR \t TC \t Total")
+    for f in L:
         rcfdi = extraeinfo(f)
         print(rcfdi)
 
