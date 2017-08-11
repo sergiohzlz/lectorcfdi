@@ -52,9 +52,10 @@ def extraeinfo(f):
         receptornombre = receptor['rfc'].encode('utf8')
 
     try:
-        resumen = "{0} \t {1} \t {2} \t {3} \t {4} \t {5} \t {6} \t{7} \t {8} \t {9} \t {10} \t {11} \t {12}".format(\
+        resumen = "{0} \t {1} \t {2} \t {3} \t {4} \t {5} \t {6} \t{7} \t {8} \t {9} \t {10} \t {11} \t {12} \t {13} ".format(\
                 emisornombre, \
                 comprobante['fecha'].encode('utf8'), \
+                comprobante['tipodecomprobante'].encode('utf8'), \
                 emisor['rfc'].encode('utf8'), \
                 tfd['uuid'].encode('utf8'), \
                 receptornombre, \
