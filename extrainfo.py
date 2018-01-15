@@ -2,10 +2,14 @@
 #-*-coding:utf8-*-
 
 from bs4 import BeautifulSoup as Soup
-import pandas as pd
+#import pandas as pd
 import glob
 import sys
 import re
+
+"""
+Version xml de cfdi 3.3
+"""
 
 def extraeinfo(f):
     fxml = open(f,'r').read()
@@ -16,20 +20,19 @@ def extraeinfo(f):
     regfiscal   = soup.find('cfdi:regimenfiscal')
     receptor    = soup.find('cfdi:receptor')
     domicilio   = soup.find('cfdi:domicilio')
-    conceptos   = soup.find_all('cfdi:concepto')
+    conceptos   = soup.find_all(lambda e: e.name=='cfdi:concepto')
     impuestos   = soup.find('cfdi:impuestos')
-    traslado    = soup.find('cfdi:traslado')
-    traslados   = soup.find_all('cfdi:traslado')
-    retenciones = soup.find_all('cfdi:retencion')
+    traslados   = soup.find_all(lambda e: e.name=='cfdi:traslado')
+    retenciones = soup.find_all(lambda e: e.name=='cfdi:retencion')
     tfd = soup.find('tfd:timbrefiscaldigital')
 
     iva, isr, ieps = 0.,0.,0.
     for t in traslados:
-        if t['impuesto']=='IVA':
+        if t['impuesto'] in ('IVA','002'):
             iva += float(t['importe'])
-        elif t['impuesto']=='ISR':
+        elif t['impuesto'] in ('ISR','001'):
             isr += float(t['importe'])
-        elif t['impuesto']=='IEPS':
+        elif t['impuesto'] in ('IEPS','003'):
             ieps += float(t['importe'])
 
     retiva, retisr = 0., 0.
@@ -39,7 +42,7 @@ def extraeinfo(f):
         elif t['impuesto']=='IVA':
             retiva += float(t['importe'])
 
-    tc = float(comprobante.get('tipocambio',1.))
+    tc = comprobante.get('tipocambio',1.)
 
     try:
         emisornombre = emisor['nombre'].encode('utf8')
@@ -51,11 +54,16 @@ def extraeinfo(f):
     except:
         receptornombre = receptor['rfc'].encode('utf8')
 
+    tcomprobantes = {'I':'Ingreso', 'E':'Egreso', 'N':'Nomina', 'P':'Pagado'}
+    tipocomprobante = comprobante['tipodecomprobante'].encode('utf8')
+    if(len(tipocomprobante)==1):
+        tipocomprobante = tcomprobantes[tipocomprobante]
+
     try:
         resumen = "{0} \t {1} \t {2} \t {3} \t {4} \t {5} \t {6} \t{7} \t {8} \t {9} \t {10} \t {11} \t {12} \t {13} ".format(\
                 emisornombre, \
-                comprobante['fecha'].encode('utf8'), \
-                comprobante['tipodecomprobante'].encode('utf8'), \
+                tfd['fechatimbrado'].encode('utf8'), \
+                tipocomprobante,\
                 emisor['rfc'].encode('utf8'), \
                 tfd['uuid'].encode('utf8'), \
                 receptornombre, \
@@ -72,9 +80,10 @@ L = glob.glob('./*.xml')
 #R = [ patt[1:].strip().lower() for patt in re.findall('(<cfdi:[A-z]*\s|<tfd:[A-z]*\s)',fxml)]
 
 if __name__=='__main__':
-    print("Emisor \t Fecha_CFDI \t RFC_Emisor \t Folio_fiscal \t Receptor \t RFC_Receptor \t Subtotal \t  IEPS \t IVA \t Ret IVA \t Ret ISR \t TC \t Total")
+    print("Emisor \t Fecha_CFDI \t Tipo \t  RFC_Emisor \t Folio_fiscal \t Receptor \t RFC_Receptor \t Subtotal \t  IEPS \t IVA \t Ret IVA \t Ret ISR \t TC \t Total")
     for f in L:
         try:
+            #print("abriendo {0}".format(f))
             rcfdi = extraeinfo(f)
         except:
             assert "Error en archivo {0}".format(f)
