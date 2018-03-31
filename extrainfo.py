@@ -11,6 +11,58 @@ import re
 Version xml de cfdi 3.3
 """
 
+class cfdi(object):
+    def __init__(self, f):
+        fxml = open(f).read()
+        self.__soup          = Soup(fxml,'lxml')
+        self.__comprobante   = soup.find('cfdi:comprobante')
+        self.__tfd           = soup.find('tfd:timbrefiscaldigital')
+        self.__version       = self.__comprobante['version']
+        self.__uuid          = self.__tfd['uuid']
+        #============comprobante============
+        self.__certificado   = self.__comprobante['certificado']
+        self.__sello         = self.__comprobante['sello']
+        self.__total         = float(self.__comprobante['total'])
+        self.__subtotal      = float(self.__comprobante['subtotal'])
+        self.__fecha_cfdi    = self.__comprobante['fecha']
+        self.__fechatimbrado = self.__tfd['fechatimbrado']
+        self.__moneda        = self.__comprobante['moneda']
+        self.__lugar         = self.__comprobante['lugarexpedicion']
+        self.__tipo          = self.__comprobante['tipodecomprobante']
+        self.__tcambio       = self.__comprobante['tipocambio']
+
+    def __impuestos(self):
+        imptos = self.__comprobante.find('cfdi:impuestos')
+        self.__totaltraslados = imptos['totalimpuestostrasladados']
+    @property
+    def certificado(self):
+        return self.__certificado
+    @property
+    def sello(self):
+        return self.__sello
+    @property
+    def total(self):
+        return self.__total
+    @property
+    def subtotal(self):
+        return self.__subtotal
+    @property
+    def fechatimbrado(self):
+        return self.__fechatimbrado
+    @property
+    def tipodecambio(self):
+        return self.__tcambio
+    @property
+    def lugar(self):
+        return self.__lugar
+    @property
+    def moneda(self):
+        return self.__moneda
+
+
+
+
+
 def extraeinfo(f):
     fxml = open(f,'r').read()
     soup = Soup(fxml,"lxml")
@@ -88,4 +140,3 @@ if __name__=='__main__':
         except:
             assert "Error en archivo {0}".format(f)
         print(rcfdi)
-
