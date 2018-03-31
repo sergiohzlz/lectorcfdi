@@ -13,24 +13,55 @@ Version xml de cfdi 3.3
 
 class cfdi(object):
     def __init__(self, f):
-        fxml = open(f).read()
-        self.__soup          = Soup(fxml,'lxml')
-        self.__comprobante   = soup.find('cfdi:comprobante')
-        self.__tfd           = soup.find('tfd:timbrefiscaldigital')
-        self.__version       = self.__comprobante['version']
-        self.__uuid          = self.__tfd['uuid']
-        #============comprobante============
-        self.__certificado   = self.__comprobante['certificado']
-        self.__sello         = self.__comprobante['sello']
-        self.__total         = float(self.__comprobante['total'])
-        self.__subtotal      = float(self.__comprobante['subtotal'])
-        self.__fecha_cfdi    = self.__comprobante['fecha']
-        self.__fechatimbrado = self.__tfd['fechatimbrado']
-        self.__moneda        = self.__comprobante['moneda']
-        self.__lugar         = self.__comprobante['lugarexpedicion']
-        self.__tipo          = self.__comprobante['tipodecomprobante']
-        self.__tcambio       = self.__comprobante['tipocambio']
-
+        """
+        Constructor que requiere en el parámetro una cadena con el nombre del
+        cfdi.
+        """
+        fxml = open(f,'r').read()
+        soup                 = Soup(fxml,'lxml')
+        #============componentes del cfdi============
+        emisor        = soup.find('cfdi:emisor')
+        receptor      = soup.find('cfdi:receptor')
+        comprobante   = soup.find('cfdi:comprobante')
+        tfd           = soup.find('tfd:timbrefiscaldigital')
+        self.__version        = self.__comprobante['version']
+        self.__uuid           = self.__tfd['uuid']
+        self.__fechatimbrado  = tfd['fechatimbrado']
+        #============emisor==========================
+        self.__emisornombre   = emisor['nombre']
+        self.__emisorrfc      = emisor['rfc']
+        #============receptor========================
+        self.__receptornombre = receptor['nombre']
+        self.__receptorrfc    = receptor['rfc']
+        #============comprobante=====================
+        self.__certificado    = comprobante['certificado']
+        self.__sello          = comprobante['sello']
+        self.__total          = float(comprobante['total'])
+        self.__subtotal       = float(comprobante['subtotal'])
+        self.__fecha_cfdi     = comprobante['fecha']
+        self.__moneda         = comprobante['moneda']
+        self.__lugar          = comprobante['lugarexpedicion']
+        self.__tipo           = comprobante['tipodecomprobante']
+        self.__tcambio        = comprobante['tipocambio']
+    def __str__(self):
+        """
+        Imprime el cfdi en el siguiente orden
+        emisor, fecha de timbrado, tipo de comprobante, rfc emisor, uuid, receptor, rfc receptor, subtotal, ieps, iva, retiva, retisr, tc, total
+        """
+        respuesta = ""
+        respuesta += self.__emisornombre
+        respuesta += self.__fechatimbrado.encode('utf8')
+        respuesta += self.__tipo
+        respuesta += self.__emisorrfc.encode('utf8')
+        respuesta += self.__uuid
+        respuesta += self.__receptornombre
+        respuesta += self.__receptorrfc.encode('utf8')
+        respuesta += str(self.__subtotal)
+        respuesta += str(self.__trasieps) + "\t" str(self.__trasiva)
+        respuesta += str(self.__retiva) + "\t" + str(self.__retisr)
+        respuesta += str(self.__tcambio)
+        respuesta += self.__total
+        return respuesta
     def __impuestos(self):
         imptos = self.__comprobante.find('cfdi:impuestos')
         self.__totaltraslados = imptos['totalimpuestostrasladados']
