@@ -27,6 +27,8 @@ class cfdi(object):
         self.__version        = self.__comprobante['version']
         self.__uuid           = self.__tfd['uuid']
         self.__fechatimbrado  = tfd['fechatimbrado']
+        self.__traslados      = soup.find_all(lambda e: e.name=='cfdi:traslado')
+        self.__retenciones    = soup.find_all(lambda e: e.name=='cfdi:retencion')
         #============emisor==========================
         self.__emisornombre   = emisor['nombre']
         self.__emisorrfc      = emisor['rfc']
@@ -36,13 +38,27 @@ class cfdi(object):
         #============comprobante=====================
         self.__certificado    = comprobante['certificado']
         self.__sello          = comprobante['sello']
-        self.__total          = float(comprobante['total'])
-        self.__subtotal       = float(comprobante['subtotal'])
+        self.__total          = round(float(comprobante['total']),2)
+        self.__subtotal       = round(float(comprobante['subtotal']),2)
         self.__fecha_cfdi     = comprobante['fecha']
         self.__moneda         = comprobante['moneda']
         self.__lugar          = comprobante['lugarexpedicion']
-        self.__tipo           = comprobante['tipodecomprobante']
-        self.__tcambio        = comprobante['tipocambio']
+        tipo = comprobante['tipodecomprobante']
+        if(float(self.__version)==3.3)
+            self.__tipo       = tipo
+        else:
+            self.__tipo       = 'I' if tipo=='ingreso' else 'E' if tipo=='egreso' else 'otro'
+        try:
+            self.__tcambio    = comprobante['tipocambio']
+        except:
+            self.__tcambio    = 1.
+        triva, trieps, trisr = self.__traslados()
+        self.__triva          = round(triva,2)
+        self.__trieps         = round(trieps,2)
+        self.__trisr          = round(trisr,2)
+        retiva, retisr = self.__traslados()
+        self.__retiva         = round(retiva,2)
+        self.__retisr         = round(retisr,2)
     def __str__(self):
         """
         Imprime el cfdi en el siguiente orden
@@ -57,14 +73,44 @@ class cfdi(object):
         respuesta += self.__receptornombre
         respuesta += self.__receptorrfc.encode('utf8')
         respuesta += str(self.__subtotal)
-        respuesta += str(self.__trasieps) + "\t" str(self.__trasiva)
+        respuesta += str(self.__trieps) + "\t" + str(self.__triva)
         respuesta += str(self.__retiva) + "\t" + str(self.__retisr)
         respuesta += str(self.__tcambio)
         respuesta += self.__total
         return respuesta
-    def __impuestos(self):
-        imptos = self.__comprobante.find('cfdi:impuestos')
-        self.__totaltraslados = imptos['totalimpuestostrasladados']
+    def __traslados(self):
+        triva, trieps, trisr = 0., 0., 0
+        for t in self.__traslados:
+            impuesto = t['impuesto']
+            importe  = float(t['importe'])
+            if(self.__version=='3.2'):
+                if impuesto=='IVA':
+                    triva += importe
+                elif impuesto=='ISR':
+                    trisr += importe
+                elif impuesto=='IEPS':
+                    trieps += importe
+                return trisr, triva, trieps
+            elif(self.__version=='3.3'):
+                try:
+                    if(float(t['base'])):
+                        if impuesto=='002':
+                            triva += importe
+                        elif impuesto=='001':
+                            trisr += importe
+                        elif impuesto=='003':
+                            trieps += importe
+                except:
+                    #print(t)
+                    pass
+    def __retenciones(self):
+        retiva, retisr = 0., 0.
+        for t in self.__retenciones:
+            if t['impuesto']=='ISR':
+                retisr += float(t['importe'])
+            elif t['impuesto']=='IVA':
+                retiva += float(t['importe'])
+        return retiva, retisr
     @property
     def certificado(self):
         return self.__certificado
