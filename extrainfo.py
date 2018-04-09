@@ -245,7 +245,7 @@ if __name__=='__main__':
     for f in L:
         try:
             #print("abriendo {0}".format(f))
-            rcfdi = extraeinfo(f)
+            rcfdi = CFDI(f)
         except:
             assert "Error en archivo {0}".format(f)
         print(rcfdi)
