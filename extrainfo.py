@@ -32,13 +32,13 @@ class CFDI(object):
         #============emisor==========================
         self.__emisorrfc      = emisor['rfc']
         try:
-            self.__emisornombre   = emisor['nombre'].encode('utf8')
+            self.__emisornombre   = emisor['nombre']
         except:
             self.__emisornombre   = emisor['rfc']
         #============receptor========================
         self.__receptorrfc    = receptor['rfc']
         try:
-            self.__receptornombre = receptor['nombre'].encode('utf8')
+            self.__receptornombre = receptor['nombre']
         except:
             self.__receptornombre = receptor['rfc']
         #============comprobante=====================
@@ -47,35 +47,42 @@ class CFDI(object):
         self.__total          = round(float(comprobante['total']),2)
         self.__subtotal       = round(float(comprobante['subtotal']),2)
         self.__fecha_cfdi     = comprobante['fecha']
+
         try:
             self.__moneda     = comprobante['moneda']
         except KeyError as k:
             self.__moneda     = 'MXN'
+
         try:
             self.__lugar      = comprobante['lugarexpedicion']
         except KeyError as k:
             self.__lugar      = u'México'
         tipo = comprobante['tipodecomprobante']
+
         if(float(self.__version)==3.2):
             self.__tipo       = tipo
         else:
             tcomprobantes = {'I':'Ingreso', 'E':'Egreso', 'N':'Nomina', 'P':'Pagado'}
             self.__tipo       = tcomprobantes[tipo]
+
         try:
             self.__tcambio    = float(comprobante['tipocambio'])
         except:
             self.__tcambio    = 1.
+
         triva, trieps, trisr  = self.__calcula_traslados()
         self.__triva          = round(triva,2)
         self.__trieps         = round(trieps,2)
         self.__trisr          = round(trisr,2)
-        retiva, retisr = self.__calcula_retenciones()
+        retiva, retisr        = self.__calcula_retenciones()
         self.__retiva         = round(retiva,2)
         self.__retisr         = round(retisr,2)
+
     def __str__(self):
         """
         Imprime el cfdi en el siguiente orden
-        emisor, fecha de timbrado, tipo de comprobante, rfc emisor, uuid, receptor, rfc receptor, subtotal, ieps, iva, retiva, retisr, tc, total
+        emisor, fecha de timbrado, tipo de comprobante, rfc emisor, uuid,_
+        receptor, rfc receptor, subtotal, ieps, iva, retiva, retisr, tc, total
         """
         # respuesta = ""
         # respuesta += self.__emisornombre.encode('utf8') + '\t'
@@ -92,6 +99,7 @@ class CFDI(object):
         # respuesta += str(self.__total)
         respuesta = '\t'.join( map(str, self.lista_valores))
         return respuesta
+
     def __calcula_traslados(self):
         triva, trieps, trisr = 0., 0., 0
         for t in self.__traslados:
@@ -119,51 +127,92 @@ class CFDI(object):
                     #entonces no hacemos nada
                     pass
         return triva, trieps, trisr
+
     def __calcula_retenciones(self):
         retiva, retisr = 0., 0.
         for t in self.__retenciones:
-            if t['impuesto']=='ISR':
-                retisr += float(t['importe'])
-            elif t['impuesto']=='IVA':
-                retiva += float(t['importe'])
+            impuesto = t['impuesto']
+            importe  = float(t['importe'])
+            if(self.__version=='3.2'):
+                if(impuesto=='ISR'):
+                    retisr += importe
+                elif(impuesto=='IVA'):
+                    retiva += importe
+            elif(self.__version=='3.3'):
+                if(impuesto=='002'):
+                    retiva += importe
+                elif(impuesto=='001'):
+                    retisr += importe
+         
         return retiva, retisr
+
     @property
     def lista_valores(self):
-        v  = [self.__emisornombre,self.__fechatimbrado.encode('utf8'), self.__tipo, self.__emisorrfc ]
+        v  = [self.__emisornombre,self.__fechatimbrado, self.__tipo, self.__emisorrfc ]
         v += [self.__uuid, self.__receptornombre, self.__receptorrfc ]
         v += [self.__subtotal, self.__trieps, self.__triva]
         v += [self.__retiva, self.__retisr, self.__tcambio, self.__total]
         return v
+
+    @property
+    def dic_cfdi(self):
+        d = {}
+        d["Emisor"]       = self.__emisornombre
+        d["Fecha_CFDI"]   = self.__fechatimbrado
+        d["Tipo"]         = self.__tipo
+        d["RFC_Emisor"]   = self.__emisorrfc
+        d["Folio_fiscal"] = self.__uuid
+        d["Receptor"]     = self.__receptornombre
+        d["RFC_Receptor"] = self.__receptorrfc
+        d["Subtotal"]     = self.__subtotal
+        d["IEPS"]         = self.__trieps
+        d["IVA"]          = self.__triva
+        d["Ret IVA"]      = self.__retiva
+        d["Ret ISR"]      = self.__retisr
+        d["TC"]           = self.__tcambio
+        d["Total"]        = self.__total
+        return d
+
     @property
     def certificado(self):
         return self.__certificado
+
     @property
     def sello(self):
         return self.__sello
+
     @property
     def total(self):
         return self.__total
+
     @property
     def subtotal(self):
         return self.__subtotal
+
     @property
     def fechatimbrado(self):
         return self.__fechatimbrado
+
     @property
     def tipodecambio(self):
         return self.__tcambio
+
     @property
     def lugar(self):
         return self.__lugar
+
     @property
     def moneda(self):
         return self.__moneda
+
     @property
     def traslado_iva(self):
         return self.__triva
+
     @property
     def traslado_isr(self):
         return self.__trisr
+
     @property
     def traslado_ieps(self):
         return self.__trieps
@@ -172,80 +221,88 @@ class CFDI(object):
 
 
 
-def extraeinfo(f):
-    fxml = open(f,'r').read()
-    soup = Soup(fxml,"lxml")
-    comprobante = soup.find('cfdi:comprobante')
-    emisor      = soup.find('cfdi:emisor')
-    domfiscal   = soup.find('cfdi:domiciliofiscal')
-    regfiscal   = soup.find('cfdi:regimenfiscal')
-    receptor    = soup.find('cfdi:receptor')
-    domicilio   = soup.find('cfdi:domicilio')
-    conceptos   = soup.find_all(lambda e: e.name=='cfdi:concepto')
-    impuestos   = soup.find('cfdi:impuestos')
-    traslados   = soup.find_all(lambda e: e.name=='cfdi:traslado')
-    retenciones = soup.find_all(lambda e: e.name=='cfdi:retencion')
-    tfd = soup.find('tfd:timbrefiscaldigital')
-
-    iva, isr, ieps = 0.,0.,0.
-    for t in traslados:
-        if t['impuesto'] in ('IVA','002'):
-            iva += float(t['importe'])
-        elif t['impuesto'] in ('ISR','001'):
-            isr += float(t['importe'])
-        elif t['impuesto'] in ('IEPS','003'):
-            ieps += float(t['importe'])
-
-    retiva, retisr = 0., 0.
-    for t in retenciones:
-        if t['impuesto']=='ISR':
-            retisr += float(t['importe'])
-        elif t['impuesto']=='IVA':
-            retiva += float(t['importe'])
-
-    tc = comprobante.get('tipocambio',1.)
-
-    try:
-        emisornombre = emisor['nombre'].encode('utf8')
-    except:
-        emisornombre = emisor['rfc'].encode('utf8')
-
-    try:
-        receptornombre = receptor['nombre'].encode('utf8')
-    except:
-        receptornombre = receptor['rfc'].encode('utf8')
-
-    tcomprobantes = {'I':'Ingreso', 'E':'Egreso', 'N':'Nomina', 'P':'Pagado'}
-    tipocomprobante = comprobante['tipodecomprobante'].encode('utf8')
-    if(len(tipocomprobante)==1):
-        tipocomprobante = tcomprobantes[tipocomprobante]
-
-    try:
-        resumen = "{0} \t {1} \t {2} \t {3} \t {4} \t {5} \t {6} \t{7} \t {8} \t {9} \t {10} \t {11} \t {12} \t {13} ".format(\
-                emisornombre, \
-                tfd['fechatimbrado'].encode('utf8'), \
-                tipocomprobante,\
-                emisor['rfc'].encode('utf8'), \
-                tfd['uuid'].encode('utf8'), \
-                receptornombre, \
-                receptor['rfc'].encode('utf8'), \
-                comprobante['subtotal'].encode('utf8'), \
-                str(ieps),str(iva),str(retiva),str(retisr), str(tc), \
-                comprobante['total'].encode('utf8'))
-    except KeyError as k:
-        print("Error en {0}".f)
-    return resumen
-
+#def extraeinfo(f):
+#    fxml = open(f,'r').read()
+#    soup = Soup(fxml,"lxml")
+#    comprobante = soup.find('cfdi:comprobante')
+#    emisor      = soup.find('cfdi:emisor')
+#    domfiscal   = soup.find('cfdi:domiciliofiscal')
+#    regfiscal   = soup.find('cfdi:regimenfiscal')
+#    receptor    = soup.find('cfdi:receptor')
+#    domicilio   = soup.find('cfdi:domicilio')
+#    conceptos   = soup.find_all(lambda e: e.name=='cfdi:concepto')
+#    impuestos   = soup.find('cfdi:impuestos')
+#    traslados   = soup.find_all(lambda e: e.name=='cfdi:traslado')
+#    retenciones = soup.find_all(lambda e: e.name=='cfdi:retencion')
+#    tfd = soup.find('tfd:timbrefiscaldigital')
+#
+#    iva, isr, ieps = 0.,0.,0.
+#    for t in traslados:
+#        if t['impuesto'] in ('IVA','002'):
+#            iva += float(t['importe'])
+#        elif t['impuesto'] in ('ISR','001'):
+#            isr += float(t['importe'])
+#        elif t['impuesto'] in ('IEPS','003'):
+#            ieps += float(t['importe'])
+#
+#    retiva, retisr = 0., 0.
+#    for t in retenciones:
+#        if t['impuesto']=='ISR':
+#            retisr += float(t['importe'])
+#        elif t['impuesto']=='IVA':
+#            retiva += float(t['importe'])
+#
+#    tc = comprobante.get('tipocambio',1.)
+#
+#    try:
+#        emisornombre = emisor['nombre'].encode('utf8')
+#    except:
+#        emisornombre = emisor['rfc'].encode('utf8')
+#
+#    try:
+#        receptornombre = receptor['nombre'].encode('utf8')
+#    except:
+#        receptornombre = receptor['rfc'].encode('utf8')
+#
+#    tcomprobantes = {'I':'Ingreso', 'E':'Egreso', 'N':'Nomina', 'P':'Pagado'}
+#    tipocomprobante = comprobante['tipodecomprobante'].encode('utf8')
+#    if(len(tipocomprobante)==1):
+#        tipocomprobante = tcomprobantes[tipocomprobante]
+#
+#    try:
+#        resumen = "{0} \t {1} \t {2} \t {3} \t {4} \t {5} \t {6} \t{7} \t {8} \t {9} \t {10} \t {11} \t {12} \t {13} ".format(\
+#                emisornombre, \
+#                tfd['fechatimbrado'].encode('utf8'), \
+#                tipocomprobante,\
+#                emisor['rfc'].encode('utf8'), \
+#                tfd['uuid'].encode('utf8'), \
+#                receptornombre, \
+#                receptor['rfc'].encode('utf8'), \
+#                comprobante['subtotal'].encode('utf8'), \
+#                str(ieps),str(iva),str(retiva),str(retisr), str(tc), \
+#                comprobante['total'].encode('utf8'))
+#    except KeyError as k:
+#        print("Error en {0}".f)
+#    return resumen
+#
 
 L = glob.glob('./*.xml')
 #R = [ patt[1:].strip().lower() for patt in re.findall('(<cfdi:[A-z]*\s|<tfd:[A-z]*\s)',fxml)]
 
+
 if __name__=='__main__':
-    print("Emisor \t Fecha_CFDI \t Tipo \t  RFC_Emisor \t Folio_fiscal \t Receptor \t RFC_Receptor \t Subtotal \t  IEPS \t IVA \t Ret IVA \t Ret ISR \t TC \t Total")
+    columnas = ["Emisor","Fecha_CFDI","Tipo","RFC_Emisor","Folio_fiscal","Receptor","RFC_Receptor",
+                "Subtotal","IEPS","IVA","Ret IVA","Ret ISR","TC","Total"]
+    titulo = ' \t '.join(columnas)
+    print(titulo)
     for f in L:
         try:
             #print("abriendo {0}".format(f))
             rcfdi = CFDI(f)
+            dic = rcfdi.dic_cfdi
+            vals = [dic[c] for c in columnas]
+            strvals = ' \t '.join(map(str, vals))
+            print(strvals)
         except:
             assert "Error en archivo {0}".format(f)
-        print(rcfdi)
+
