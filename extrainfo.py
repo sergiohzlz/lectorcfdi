@@ -27,8 +27,10 @@ class CFDI(object):
         self.__version        = comprobante['version']
         self.__uuid           = tfd['uuid']
         self.__fechatimbrado  = tfd['fechatimbrado']
-        self.__traslados      = soup.find_all(lambda e: e.name=='cfdi:traslado')
-        self.__retenciones    = soup.find_all(lambda e: e.name=='cfdi:retencion')
+        self.__traslados      = soup.find_all(lambda e: e.name=='cfdi:traslado' and
+                                                        sorted(e.attrs.keys())==['importe','impuesto'])
+        self.__retenciones    = soup.find_all(lambda e: e.name=='cfdi:retencion' and 
+                                                        sorted(e.attrs.keys())==['importe','impuesto'])
         #============emisor==========================
         self.__emisorrfc      = emisor['rfc']
         try:
@@ -47,6 +49,8 @@ class CFDI(object):
         self.__total          = round(float(comprobante['total']),2)
         self.__subtotal       = round(float(comprobante['subtotal']),2)
         self.__fecha_cfdi     = comprobante['fecha']
+        self.__conceptos      = soup.find_all(lambda e: e.name=='cfdi:concepto')
+        self.__n_conceptos    = len(self.__conceptos)
 
         try:
             self.__moneda     = comprobante['moneda']
@@ -84,19 +88,6 @@ class CFDI(object):
         emisor, fecha de timbrado, tipo de comprobante, rfc emisor, uuid,_
         receptor, rfc receptor, subtotal, ieps, iva, retiva, retisr, tc, total
         """
-        # respuesta = ""
-        # respuesta += self.__emisornombre.encode('utf8') + '\t'
-        # respuesta += self.__fechatimbrado + '\t'
-        # respuesta += self.__tipo + '\t'
-        # respuesta += self.__emisorrfc + '\t'
-        # respuesta += self.__uuid + '\t'
-        # respuesta += self.__receptornombre.encode('utf8') + '\t'
-        # respuesta += self.__receptorrfc + '\t'
-        # respuesta += str(self.__subtotal) + '\t'
-        # respuesta += str(self.__trieps) + "\t" + str(self.__triva) + '\t'
-        # respuesta += str(self.__retiva) + "\t" + str(self.__retisr) + '\t'
-        # respuesta += str(self.__tcambio) + '\t'
-        # respuesta += str(self.__total)
         respuesta = '\t'.join( map(str, self.lista_valores))
         return respuesta
 
@@ -113,19 +104,12 @@ class CFDI(object):
                 elif impuesto=='IEPS':
                     trieps += importe
             elif(self.__version=='3.3'):
-                try:
-                    if(float(t['base'])): #no todos tienen este atributo
-                        if impuesto=='002':
-                            triva += importe
-                        elif impuesto=='001':
-                            trisr += importe
-                        elif impuesto=='003':
-                            trieps += importe
-                except:
-                    #print(t)
-                    #en caso de que el traslado no tenga el atributo base
-                    #entonces no hacemos nada
-                    pass
+                if impuesto=='002':
+                    triva += importe
+                elif impuesto=='001':
+                    trisr += importe
+                elif impuesto=='003':
+                    trieps += importe
         return triva, trieps, trisr
 
     def __calcula_retenciones(self):
@@ -217,7 +201,13 @@ class CFDI(object):
     def traslado_ieps(self):
         return self.__trieps
 
+    @property
+    def n_conceptos(self):
+        return self.__n_conceptos
 
+    @property
+    def conceptos(self):
+        return self.__conceptos
 
 
 
