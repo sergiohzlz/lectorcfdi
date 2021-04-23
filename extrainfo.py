@@ -215,9 +215,10 @@ class CFDI(object):
     def folio(self):
         return self.__folio
 
+    @staticmethod
     def columnas():
-        return ["Emisor","Fecha_CFDI","Tipo","RFC_Emisor","Folio_fiscal","Receptor","RFC_Receptor",
-                "Subtotal","IEPS","IVA","Ret IVA","Ret ISR","TC","Total"]
+        return ["Emisor","Fecha_CFDI","Tipo","RFC_Emisor","Folio_fiscal","Folio","Receptor",
+                "RFC_Receptor", "Subtotal","IEPS","IVA","Ret IVA","Ret ISR","TC","Total"]
 
 
 
