@@ -220,6 +220,14 @@ class CFDI(object):
         return ["Emisor","Fecha_CFDI","Tipo","RFC_Emisor","Folio_fiscal","Folio","Receptor",
                 "RFC_Receptor", "Subtotal","IEPS","IVA","Ret IVA","Ret ISR","TC","Total"]
 
+    @staticmethod
+    def imprime_reporte(nf, nr):
+        reporte  = "Número de archivos procesados:\t {}\n".format(nf)
+        reporte += "Número de filas en tsv:\t {}\n".format(nr)
+        if(nf!=nr):
+            reporte += "\n\n**** Atención ****\n"
+
+        return reporte
 
 
 
@@ -228,17 +236,25 @@ L = glob.glob('./*.xml')
 
 
 if __name__=='__main__':
+    salida = sys.argv[1]
+    fout   = open(salida,'w')
     columnas = CFDI.columnas()
-    titulo   = '\t'.join(columnas)
-    print(titulo)
+    titulo   = '\t'.join(columnas)+'\n'
+    fout.write(titulo)
+    nl = 0
     for f in L:
         try:
             #print("abriendo {0}".format(f))
             rcfdi = CFDI(f)
             dic = rcfdi.dic_cfdi
             vals = [dic[c] for c in columnas]
-            strvals = ' \t '.join(map(str, vals))
-            print(strvals)
+            strvals = ' \t '.join(map(str, vals))+'\n'
+            fout.write(strvals)
+            nl += 1
         except:
             assert "Error en archivo {0}".format(f)
+    fout.close()
 
+    nr = len(L)
+    rep = CFDI.imprime_reporte(nr, nl)
+    print(rep)
