@@ -1,5 +1,4 @@
-#!/usr/bin/python
-#-*-coding:utf8-*-
+#coding:utf8
 
 from bs4 import BeautifulSoup as Soup
 #import pandas as pd
@@ -14,16 +13,9 @@ Version xml de cfdi 3.3
 class CFDI(object):
     def __init__(self, f):
         """
-        Clase para representar un CFDI tomado de un xml
+        Constructor que requiere en el parámetro una cadena con el nombre del
+        cfdi.
 
-        Atributes
-        -----------
-
-        Methods
-        -----------
-        imprime_reporte(nf, nr):
-            Genera el reporte de todos los conceptos en cada uno de los cfdis 
-            en la lista
 
         """
         fxml = open(f,'r').read()
@@ -33,19 +25,15 @@ class CFDI(object):
         receptor      = soup.find('cfdi:receptor')
         comprobante   = soup.find('cfdi:comprobante')
         tfd           = soup.find('tfd:timbrefiscaldigital')
+        #print(comprobante)
         self.__version        = comprobante['version']
-        try:
-            self.__folio      = comprobante['folio']
-        except:
-            self.__folio      = 'NA'
+        self.__folio          = comprobante['folio']
         self.__uuid           = tfd['uuid']
         self.__fechatimbrado  = tfd['fechatimbrado']
         self.__traslados      = soup.find_all(lambda e: e.name=='cfdi:traslado' and
                                                         sorted(e.attrs.keys())==['importe','impuesto','tasaocuota','tipofactor'])
         self.__retenciones    = soup.find_all(lambda e: e.name=='cfdi:retencion' and 
                                                         sorted(e.attrs.keys())==['importe','impuesto'])
-        self.__formapago      = comprobante['formapago']
-        self.__metodopago     = comprobante['metodopago']
         #============emisor==========================
         self.__emisorrfc      = emisor['rfc']
         try:
@@ -66,6 +54,8 @@ class CFDI(object):
         self.__fecha_cfdi     = comprobante['fecha']
         self.__conceptos      = soup.find_all(lambda e: e.name=='cfdi:concepto')
         self.__n_conceptos    = len(self.__conceptos)
+        self.__metodopago     = comprobante['metodopago']
+        self.__formapago      = comprobante['formapago']
 
         try:
             self.__moneda     = comprobante['moneda']
@@ -149,7 +139,7 @@ class CFDI(object):
     def lista_valores(self):
         v  = [self.__emisornombre,self.__fechatimbrado, self.__tipo, self.__emisorrfc ]
         v += [self.__uuid, self.__folio, self.__receptornombre, self.__receptorrfc ]
-        v += [self.__formapago, self.__metodopago]
+        v += [self.__metodopago, self.__formapago]
         v += [self.__subtotal, self.__trieps, self.__triva]
         v += [self.__retiva, self.__retisr, self.__tcambio, self.__total]
         return v
@@ -172,8 +162,8 @@ class CFDI(object):
         d["Ret ISR"]      = self.__retisr
         d["TC"]           = self.__tcambio
         d["Total"]        = self.__total
-        d["Metodo_pago"]  = self.__metodopago
         d["Forma_pago"]   = self.__formapago
+        d["Metodo_pago"]  = self.__metodopago
         return d
 
     @property
@@ -231,11 +221,11 @@ class CFDI(object):
     @property
     def folio(self):
         return self.__folio
-
-    @property 
+    
+    @property
     def metodopago(self):
         return self.__metodopago
-
+    
     @property
     def formapago(self):
         return self.__formapago
@@ -243,16 +233,22 @@ class CFDI(object):
     @staticmethod
     def columnas():
         return ["Emisor","Fecha_CFDI","Tipo","RFC_Emisor","Folio_fiscal","Folio","Receptor",
-                "RFC_Receptor", "Forma_pago", "Método_pago", "Subtotal","IEPS","IVA",
-                "Ret IVA","Ret ISR","TC","Total"]
+                "RFC_Receptor", "Metodo_pago", "Forma_pago", "Subtotal","IEPS","IVA","Ret IVA",
+                "Ret ISR","TC","Total"]
 
     @staticmethod
     def imprime_reporte(nf, nr):
         """
-        Método para imprimir un reporte de todos los cfdis pasadas 
+        Metodo generar un reporte de todos los xmls pasados en los 
+        atributos
+
+        Params:
+        -------
+        nf:  Número de archivos procesaod 
+        nr:  Número de filas
         """
-        reporte  = "Número de archivos procesados:\t {}\n".format(nf)
-        reporte += "Número de filas en tsv:\t {}\n".format(nr)
+        reporte  = f"Número de archivos procesados:\t {nf}\n"
+        reporte += f"Número de filas en tsv:\t {nr}\n"
         if(nf!=nr):
             reporte += "\n\n**** Atención ****\n"
 
@@ -273,12 +269,11 @@ if __name__=='__main__':
     nl = 0
     for f in L:
         try:
-            #print("abriendo {0}".format(f))
+            print(f"abriendo {f}")
             rcfdi = CFDI(f)
             dic = rcfdi.dic_cfdi
             vals = [dic[c] for c in columnas]
             strvals = ' \t '.join(map(str, vals))+'\n'
-            print(strvals)
             fout.write(strvals)
             nl += 1
         except:
