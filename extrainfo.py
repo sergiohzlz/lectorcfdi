@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup as Soup
 import glob
 import sys
 import re
+import logging
 
 """
 Version xml de cfdi 3.3
@@ -54,8 +55,23 @@ class CFDI(object):
         self.__fecha_cfdi     = comprobante['fecha']
         self.__conceptos      = soup.find_all(lambda e: e.name=='cfdi:concepto')
         self.__n_conceptos    = len(self.__conceptos)
-        self.__metodopago     = comprobante['metodopago']
-        self.__formapago      = comprobante['formapago']
+        tipo = comprobante['tipodecomprobante']
+        if(float(self.__version)==3.2):
+            self.__tipo       = tipo
+        else:
+            tcomprobantes = {'I':'Ingreso', 'E':'Egreso', 'N':'Nomina', 'P':'Pagado'}
+            self.__tipo       = tcomprobantes[tipo]
+
+        #============metodo de pago===================
+        try:
+            self.__metodopago     = comprobante['metodopago']
+        except:
+            self.__metodopago     = self.__tipo
+        #============tipo de pago=====================
+        try:
+            self.__formapago      = comprobante['formapago']
+        except:
+            self.__formapago      = self.__tipo
 
         try:
             self.__moneda     = comprobante['moneda']
@@ -66,13 +82,7 @@ class CFDI(object):
             self.__lugar      = comprobante['lugarexpedicion']
         except KeyError as k:
             self.__lugar      = u'México'
-        tipo = comprobante['tipodecomprobante']
 
-        if(float(self.__version)==3.2):
-            self.__tipo       = tipo
-        else:
-            tcomprobantes = {'I':'Ingreso', 'E':'Egreso', 'N':'Nomina', 'P':'Pagado'}
-            self.__tipo       = tcomprobantes[tipo]
 
         try:
             self.__tcambio    = float(comprobante['tipocambio'])
@@ -277,7 +287,7 @@ if __name__=='__main__':
             fout.write(strvals)
             nl += 1
         except:
-            assert "Error en archivo {0}".format(f)
+            print(f"Error en archivo {f}")
     fout.close()
 
     nr = len(L)
