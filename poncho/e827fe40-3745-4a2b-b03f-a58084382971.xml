@@ -1,0 +1,184 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<cfdi:Comprobante xmlns:cfdi="http://www.sat.gob.mx/cfd/4" xmlns:implocal="http://www.sat.gob.mx/implocal" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Certificado="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" Sello="qUbgWlBXsswGIINqQTqAE+rSLSlwQRil6O13B3TaDLs8/oo90QaWaHgkVa88JMxpv+d7kVQ51XstiYf5/DdbGmJa+lJsrQHVVGyF4CeAbOgTM3CyrSUdZgalfxpULdDccb768YTen97bxFxkvXHvZkec7Kqm1uiV7WXRpYhs/UD5AbPHfOKrA6C/zeZF0D1kwPH1beYu7NxNlggmG7yWzhgx/98LRRu/qToePvrIXoU9oU0by5TdK27yLhlxov/QVu2oqvF+IIcgfT5UZvMqKmLw6WpoMNEB4CuMArrSmKYeOqPGd6jkc5CNrSLtgP30hG79XlcU0qhejYiwaJYYzw==" Fecha="2026-03-31T10:01:07" xsi:schemaLocation="http://www.sat.gob.mx/cfd/4 http://www.sat.gob.mx/sitio_internet/cfd/4/cfdv40.xsd http://www.sat.gob.mx/implocal http://www.sat.gob.mx/sitio_internet/cfd/implocal/implocal.xsd" Version="4.0" Serie="CFDA" Folio="9465238847" FormaPago="99" NoCertificado="00001000000707936979" SubTotal="4137.33" Descuento="1466.05" Moneda="MXN" TipoCambio="1" Total="3098.68" TipoDeComprobante="I" Exportacion="01" MetodoPago="PPD" LugarExpedicion="02300">
+  <cfdi:Emisor Rfc="EME880309SK5" Nombre="ESTAFETA MEXICANA" RegimenFiscal="601" />
+  <cfdi:Receptor Rfc="CLM110216R54" Nombre="CONCEPTO LIBRE MEXICANO" DomicilioFiscalReceptor="03700" RegimenFiscalReceptor="601" UsoCFDI="G03" />
+  <cfdi:Conceptos>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="7CB" Cantidad="1.000" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="CARGO ADIC COMBUSTIBLE TERRESTRE" ValorUnitario="42.8300" Importe="42.8300" ObjetoImp="02" Descuento="0.0000">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="42.8300" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="6.8528" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="7SP" Cantidad="4.000" ClaveUnidad="KGM" Unidad="KILO" Descripcion="GARANTIA SERVICIO TERRESTRE SOBREPESO" ValorUnitario="18.6000" Importe="74.4000" ObjetoImp="02" Descuento="31.9600">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="42.4400" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="6.7904" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="7CBS" Cantidad="4.000" ClaveUnidad="KGM" Unidad="KILO" Descripcion="CARGO ADIC COMBUSTIBLE TERRESTRE SP" ValorUnitario="2.1100" Importe="8.4400" ObjetoImp="02" Descuento="0.0000">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="8.4400" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="1.3504" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="7CB" Cantidad="1.000" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="CARGO ADIC COMBUSTIBLE TERRESTRE" ValorUnitario="31.3100" Importe="31.3100" ObjetoImp="02" Descuento="0.0000">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="31.3100" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="5.0096" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="7CB" Cantidad="1.000" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="CARGO ADIC COMBUSTIBLE TERRESTRE" ValorUnitario="36.6100" Importe="36.6100" ObjetoImp="02" Descuento="0.0000">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="36.6100" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="5.8576" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="7CB" Cantidad="1.000" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="CARGO ADIC COMBUSTIBLE TERRESTRE" ValorUnitario="42.8300" Importe="42.8300" ObjetoImp="02" Descuento="0.0000">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="42.8300" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="6.8528" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="7CB" Cantidad="1.000" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="CARGO ADIC COMBUSTIBLE TERRESTRE" ValorUnitario="51.3700" Importe="51.3700" ObjetoImp="02" Descuento="0.0000">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="51.3700" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="8.2192" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="7RX" Cantidad="1.000" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="GARANTIA SERVICIO TERRESTRE REEXPEDICION" ValorUnitario="150.0000" Importe="150.0000" ObjetoImp="02" Descuento="0.0000">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="150.0000" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="24.0000" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="7SP" Cantidad="2.000" ClaveUnidad="KGM" Unidad="KILO" Descripcion="GARANTIA SERVICIO TERRESTRE SOBREPESO" ValorUnitario="14.2900" Importe="28.5800" ObjetoImp="02" Descuento="11.4400">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="17.1400" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="2.7424" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="7CBS" Cantidad="2.000" ClaveUnidad="KGM" Unidad="KILO" Descripcion="CARGO ADIC COMBUSTIBLE TERRESTRE SP" ValorUnitario="1.7100" Importe="3.4200" ObjetoImp="02" Descuento="0.0000">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="3.4200" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="0.5472" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="7CB" Cantidad="1.000" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="CARGO ADIC COMBUSTIBLE TERRESTRE" ValorUnitario="31.3100" Importe="31.3100" ObjetoImp="02" Descuento="0.0000">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="31.3100" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="5.0096" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="7CB" Cantidad="4.000" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="CARGO ADIC COMBUSTIBLE TERRESTRE" ValorUnitario="36.6100" Importe="146.4400" ObjetoImp="02" Descuento="0.0000">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="146.4400" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="23.4304" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="7SP" Cantidad="14.000" ClaveUnidad="KGM" Unidad="KILO" Descripcion="GARANTIA SERVICIO TERRESTRE SOBREPESO" ValorUnitario="14.2900" Importe="200.0600" ObjetoImp="02" Descuento="80.0800">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="119.9800" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="19.1968" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="7CBS" Cantidad="14.000" ClaveUnidad="KGM" Unidad="KILO" Descripcion="CARGO ADIC COMBUSTIBLE TERRESTRE SP" ValorUnitario="1.7100" Importe="23.9400" ObjetoImp="02" Descuento="0.0000">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="23.9400" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="3.8304" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="0055911475465700000110" Cantidad="1.00" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="SERVICIOS POSTALES DE PAQUETEO Y COURRIER" ValorUnitario="377.5600" Importe="377.5600" ObjetoImp="02" Descuento="162.3500">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="215.2100" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="34.4336" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="6055911475465700000112" Cantidad="1.00" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="SERVICIOS POSTALES DE PAQUETEO Y COURRIER" ValorUnitario="262.2600" Importe="262.2600" ObjetoImp="02" Descuento="104.9000">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="157.3600" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="25.1776" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="8055911475465700000111" Cantidad="1.00" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="SERVICIOS POSTALES DE PAQUETEO Y COURRIER" ValorUnitario="306.6600" Importe="306.6600" ObjetoImp="02" Descuento="122.6700">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="183.9900" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="29.4384" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="4055911475465700000113" Cantidad="1.00" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="SERVICIOS POSTALES DE PAQUETEO Y COURRIER" ValorUnitario="377.5600" Importe="377.5600" ObjetoImp="02" Descuento="162.3500">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="215.2100" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="34.4336" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="2055911475465700000114" Cantidad="1.00" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="SERVICIOS POSTALES DE PAQUETEO Y COURRIER" ValorUnitario="452.8500" Importe="452.8500" ObjetoImp="02" Descuento="194.7200">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="258.1300" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="41.3008" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="2055911475465700000119" Cantidad="1.00" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="SERVICIOS POSTALES DE PAQUETEO Y COURRIER" ValorUnitario="262.2600" Importe="262.2600" ObjetoImp="02" Descuento="104.9000">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="157.3600" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="25.1776" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="0055911475465700000115" Cantidad="1.00" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="SERVICIOS POSTALES DE PAQUETEO Y COURRIER" ValorUnitario="306.6600" Importe="306.6600" ObjetoImp="02" Descuento="122.6700">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="183.9900" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="29.4384" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="4055911475465700000118" Cantidad="1.00" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="SERVICIOS POSTALES DE PAQUETEO Y COURRIER" ValorUnitario="306.6600" Importe="306.6600" ObjetoImp="02" Descuento="122.6700">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="183.9900" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="29.4384" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="6055911475465700000117" Cantidad="1.00" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="SERVICIOS POSTALES DE PAQUETEO Y COURRIER" ValorUnitario="306.6600" Importe="306.6600" ObjetoImp="02" Descuento="122.6700">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="183.9900" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="29.4384" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+    <cfdi:Concepto ClaveProdServ="78102200" NoIdentificacion="8055911475465700000116" Cantidad="1.00" ClaveUnidad="E48" Unidad="SERVICIO" Descripcion="SERVICIOS POSTALES DE PAQUETEO Y COURRIER" ValorUnitario="306.6600" Importe="306.6600" ObjetoImp="02" Descuento="122.6700">
+      <cfdi:Impuestos>
+        <cfdi:Traslados>
+          <cfdi:Traslado Base="183.9900" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="29.4384" />
+        </cfdi:Traslados>
+      </cfdi:Impuestos>
+    </cfdi:Concepto>
+  </cfdi:Conceptos>
+  <cfdi:Impuestos TotalImpuestosTrasladados="427.40">
+    <cfdi:Traslados>
+      <cfdi:Traslado Base="2671.28" Impuesto="002" TipoFactor="Tasa" TasaOCuota="0.160000" Importe="427.40" />
+    </cfdi:Traslados>
+  </cfdi:Impuestos>
+  <cfdi:Complemento>
+    <tfd:TimbreFiscalDigital xmlns:tfd="http://www.sat.gob.mx/TimbreFiscalDigital" xsi:schemaLocation="http://www.sat.gob.mx/TimbreFiscalDigital http://www.sat.gob.mx/sitio_internet/cfd/TimbreFiscalDigital/TimbreFiscalDigitalv11.xsd" Version="1.1" UUID="e827fe40-3745-4a2b-b03f-a58084382971" FechaTimbrado="2026-03-31T10:01:09" RfcProvCertif="AUR100128NN3" SelloSAT="m1A5FEAz4RH0cIg5ZDeoO005d20G2dDAWr0hRhMxOdlsB76KOQytiwsYYK/9REPO2enf+7epZdpWHLX0r20Q4sTEVrYbcQWuk8ueTyo3JIyewYfWoO8G9quvZ+2hy3UaVTw/+bknD3K90DVMMbPGwwQrTpf4bIu2MPuyUQsOLh+qtDj6vFHm0v135HVrY564vIc0qnS8kWjJE4LRp0HrwDu/OGu8tPGAHM1KEkSaE2pq5DWOwvCJ/+eEtDDRAgGfHYBEmj+4B7By2/XjWltBxscmhsH2ATTChsWWKkhCW8KiEGAnzqSJiXWS1PD54VGHhk7loM2nrb+94Sl89rvSFA==" SelloCFD="qUbgWlBXsswGIINqQTqAE+rSLSlwQRil6O13B3TaDLs8/oo90QaWaHgkVa88JMxpv+d7kVQ51XstiYf5/DdbGmJa+lJsrQHVVGyF4CeAbOgTM3CyrSUdZgalfxpULdDccb768YTen97bxFxkvXHvZkec7Kqm1uiV7WXRpYhs/UD5AbPHfOKrA6C/zeZF0D1kwPH1beYu7NxNlggmG7yWzhgx/98LRRu/qToePvrIXoU9oU0by5TdK27yLhlxov/QVu2oqvF+IIcgfT5UZvMqKmLw6WpoMNEB4CuMArrSmKYeOqPGd6jkc5CNrSLtgP30hG79XlcU0qhejYiwaJYYzw==" NoCertificadoSAT="00001000000710611637" />
+  </cfdi:Complemento>
+</cfdi:Comprobante>
+

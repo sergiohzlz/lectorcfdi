@@ -30,9 +30,9 @@ class CFDI(object):
         #print(comprobante)
         self.__version        = comprobante['version']     # type: ignore
         try:
-            self.__folio          = comprobante['folio']   # type: ignore
+            self.__folio      = comprobante['folio']       # type: ignore
         except KeyError:
-            self.__folio = 'NA'
+            self.__folio      = 'NA'
 
         self.__uuid           = tfd['uuid']                # type: ignore
         self.__fechatimbrado  = tfd['fechatimbrado']       # type: ignore
@@ -70,7 +70,7 @@ class CFDI(object):
         self.__traslados = self.__get_traslados(impuestos)
 
         self.__retenciones = self.__get_retenciones(impuestos)
-
+        
         if(float(self.__version)==3.2):
             self.__tipo       = tipo
         else:
@@ -154,68 +154,89 @@ class CFDI(object):
             attr_g = 'cfdi:traslados'
             attr_s = 'cfdi:traslado'
         
-        traslados = [x for x in impuestos if getattr(x, "name", None) in [ attr_g]]
-        if(len(traslados)>0):
-            return traslados[0].find_all(lambda e : e.name in [attr_s])
+        traslados = [
+            traslado
+            for cont in impuestos
+            if getattr(cont, 'name', None) == attr_g
+            for traslado in cont.find_all(attr_s, recursive=False)
+            
+        ]
+        
+        # print(f"get_tras {traslados}")
         return traslados
 
     def __get_retenciones(self, impuestos):
-        if(self.__pago20):
-            attr_g = 'pago20:retencionesp'
-            attr_s = 'pago20:retencionp'
-        else:
-            attr_g = 'cfdi:retencionesp'
-            attr_s = 'cfdi:retencion'
-        retenciones = [x for x in impuestos if getattr(x, "name", None) in [attr_g]]
-        if(len(retenciones)>0):
-            return retenciones[0].find_all(lambda e: e.name in [attr_s])
+        
+        attr_g, attr_s = ('pago20:retencionesp', 'pago20:retencionp') if self.__pago20 else ('cfdi:retenciones', 'cfdi:retencion')
+
+        retenciones = [
+            retencion
+            for cont in impuestos
+            if getattr(cont, 'name', None) == attr_g
+            for retencion in cont.find_all(attr_s, recursive=False)
+        ]
+
+        # print(f"get_ret {retenciones} y pago20 {self.__pago20}")
         return retenciones
     
     def __calcula_traslados(self):
 
+        ## definicion del diccinario de respuesta
+        if(self.__version=='3.2'):
+            k_iva, k_isr, k_ieps = 'IVA', 'ISR', 'IEPS'
+        elif(self.__version in ['3.3', '4.0']):
+            k_iva, k_isr, k_ieps = '001', '002', '003'
+        else:
+            raise "Version no soportada"
+        
+        rets = {k_iva : 0., k_isr : 0., k_ieps : 0.}
+        
         if(self.__version == '3.2'):
-            rets = {'IVA' : 0. , 'ISR' : 0., 'IEPS' : 0.}
+
             for t in self.__traslados: # pyright: ignore[reportOptionalIterable]
                 impuesto = t['impuesto']
                 importe  = float(t['importe'])
                 rets[impuesto] += importe
-            return rets['IVA'], rets['ISR'], rets['IEPS']
 
         elif(self.__version in ['3.3', '4.0']):
-            rets = {'001' : 0. , '002' : 0., '003' : 0.}
-            for t in self.__traslados:
-                # print(f"{t}")
-                if(self.__pago20):
-                    atrib_impto, atrib_importe = 'impuestop', 'importep'
-                else:
-                    atrib_impto, atrib_importe = 'impuesto', 'importe'
 
-                impuesto = t[atrib_impto]
-                importe  = float(t[atrib_importe])
+            for t in self.__traslados:
+                if(self.__pago20):
+                    lbl_atrib_impto, lbl_atrib_importe, lbl_factor = 'impuestop', 'importep', 'tipofactorp'
+                else:
+                    lbl_atrib_impto, lbl_atrib_importe, lbl_factor  = 'impuesto', 'importe', 'tipofactor'
+
+                impuesto = t[lbl_atrib_impto]
+                importe  = float(t[lbl_atrib_importe]) if t[lbl_factor].lower() != "exento" else 0
                 rets[impuesto] += importe
-                # print(f"Traslado {impuesto} - {importe}") 
-            return rets['001'], rets['002'], rets['003']
+        
+        return rets[k_iva], rets[k_isr], rets[k_ieps]
 
     def __calcula_retenciones(self):
-        retiva, retisr = 0., 0.
-        for t in self.__retenciones:
-            impuesto = t['impuesto']
-            importe  = float(t['importe'])
 
-            if(self.__version=='3.2'):
-                if(impuesto=='ISR'):
-                    retisr += importe
-                elif(impuesto=='IVA'):
-                    retiva += importe
+        ## definicion del diccinario de respuesta
+        if(self.__version=='3.2'):
+            k_iva, k_isr = 'IVA', 'ISR'
+        elif(self.__version in ['3.3', '4.0']):
+            k_iva, k_isr = '001', '002'
+        else:
+            raise "Version no soportada"
+        
+        rets = {k_iva : 0., k_isr : 0.}
+        
+    
+        for t in self.__retenciones:
+            if(self.__pago20):
+                lbl_atrib_impto, lbl_atrib_importe, lbl_factor = 'impuestop', 'importep', 'tipofactorp'
+            else:
+                lbl_atrib_impto, lbl_atrib_importe, lbl_factor  = 'impuesto', 'importe', 'tipofactor'
+
             
-            elif(self.__version in ['3.3', '4.0']):
-                if(impuesto=='001'):
-                    retisr += importe
-                elif(impuesto=='002'):
-                    retiva += importe
-                
-         
-        return retiva, retisr
+            impuesto = t[lbl_atrib_impto]
+            importe  = float(t[lbl_atrib_importe]) if t[lbl_factor].lower() != "exento" else 0
+            rets[impuesto] += importe
+
+        return rets[k_iva], rets[k_isr]
 
     @property
     def lista_valores(self):
