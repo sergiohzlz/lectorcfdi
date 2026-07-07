@@ -11,6 +11,7 @@ Version xml de cfdi 3.3 y cfdi 4
 """
 
 class CFDI(object):
+    
     def __init__(self, f):
         """
         Constructor que requiere en el parámetro una cadena con el nombre del
@@ -26,6 +27,8 @@ class CFDI(object):
         tfd                = soup.find('tfd:timbrefiscaldigital')
         self.__complemento = soup.find('cfdi:complemento')  
         self.__pago20      = False if soup.find('pago20:doctorelacionado') is None else True 
+
+        assert comprobante['version'] in ['3.2', '3.3', '4.0'], "Version no soportada" # type: ignore
         
         #print(comprobante)
         self.__version        = comprobante['version']     # type: ignore
@@ -129,55 +132,39 @@ class CFDI(object):
         self.__retisr         = round(retisr,2)
         self.atributos = self.__get_dicc_cfdi()
 
-    def __str__(self):
+    def __repr__(self):
         """
         Imprime el cfdi en el siguiente orden
         emisor, fecha de timbrado, tipo de comprobante, rfc emisor, uuid,_
         receptor, rfc receptor, subtotal, ieps, iva, retiva, retisr, tc, total
         """
-        respuesta = '\t'.join( map(str, self.lista_valores))
+        respuesta = '[Pago20] ' if self.__pago20 else '[CFDI] ' + '\t'.join( map(str, self.lista_valores))
         return respuesta
     
     def __obten_impuestos(self, sopa):
         if(self.__pago20):
-            print("Pago20")
-            return list(sopa.find('pago20:impuestosp').children)
+            return sopa.find('pago20:impuestosp')
         else:
-            print("CFDI normal")
-            return list(sopa.find('cfdi:impuestos').children)
+            return sopa.find('cfdi:impuestos') 
 
     def __get_traslados(self, impuestos):
         if(self.__pago20):
-            attr_g = 'pago20:trasladosp'
-            attr_s = 'pago20:trasladop'
+            attr_g, attr_s = ('pago20:trasladosp', 'pago20:trasladop')
         else:
-            attr_g = 'cfdi:traslados'
-            attr_s = 'cfdi:traslado'
+            attr_g, attr_s = ('cfdi:traslados', 'cfdi:traslado')
         
-        traslados = [
-            traslado
-            for cont in impuestos
-            if getattr(cont, 'name', None) == attr_g
-            for traslado in cont.find_all(attr_s, recursive=False)
-            
-        ]
-        
-        # print(f"get_tras {traslados}")
-        return traslados
+        traslados = impuestos.find(attr_g)
+        return traslados.find_all(attr_s)
 
     def __get_retenciones(self, impuestos):
         
-        attr_g, attr_s = ('pago20:retencionesp', 'pago20:retencionp') if self.__pago20 else ('cfdi:retenciones', 'cfdi:retencion')
+        if self.__pago20:
+            attr_g, attr_s = ('pago20:retencionesp', 'pago20:retencionp') 
+        else:
+            attr_g, attr_s = ('cfdi:retenciones', 'cfdi:retencion')
 
-        retenciones = [
-            retencion
-            for cont in impuestos
-            if getattr(cont, 'name', None) == attr_g
-            for retencion in cont.find_all(attr_s, recursive=False)
-        ]
-
-        # print(f"get_ret {retenciones} y pago20 {self.__pago20}")
-        return retenciones
+        retenciones = impuestos.find(attr_g)
+        return retenciones.find_all(attr_s)
     
     def __calcula_traslados(self):
 
@@ -187,19 +174,17 @@ class CFDI(object):
         elif(self.__version in ['3.3', '4.0']):
             k_iva, k_isr, k_ieps = '001', '002', '003'
         else:
-            raise "Version no soportada"
-        
+            k_iva, k_isr, k_ieps = '','', ''
+
         rets = {k_iva : 0., k_isr : 0., k_ieps : 0.}
         
         if(self.__version == '3.2'):
-
             for t in self.__traslados: # pyright: ignore[reportOptionalIterable]
                 impuesto = t['impuesto']
                 importe  = float(t['importe'])
                 rets[impuesto] += importe
 
         elif(self.__version in ['3.3', '4.0']):
-
             for t in self.__traslados:
                 if(self.__pago20):
                     lbl_atrib_impto, lbl_atrib_importe, lbl_factor = 'impuestop', 'importep', 'tipofactorp'
@@ -220,8 +205,8 @@ class CFDI(object):
         elif(self.__version in ['3.3', '4.0']):
             k_iva, k_isr = '001', '002'
         else:
-            raise "Version no soportada"
-        
+            k_iva, k_isr = '', ''
+
         rets = {k_iva : 0., k_isr : 0.}
         
     
