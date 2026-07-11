@@ -31,23 +31,23 @@ class CFDI(object):
         assert comprobante['version'] in ['3.2', '3.3', '4.0'], "Version no soportada" # type: ignore
         
         #print(comprobante)
-        self.__version        = comprobante['version']     # type: ignore
+        self.__version            = comprobante['version']     # type: ignore
         try:
-            self.__folio      = comprobante['folio']       # type: ignore
+            self.__folio          = comprobante['folio']       # type: ignore
         except KeyError:
-            self.__folio      = 'NA'
+            self.__folio          = 'NA'
 
-        self.__uuid           = tfd['uuid']                # type: ignore
-        self.__fechatimbrado  = tfd['fechatimbrado']       # type: ignore
+        self.__uuid               = tfd['uuid']                # type: ignore
+        self.__fechatimbrado      = tfd['fechatimbrado']       # type: ignore
         
         #============emisor==========================
-        self.__emisorrfc      = emisor['rfc']              # type: ignore
+        self.__emisorrfc          = emisor['rfc']              # type: ignore
         try:    
             self.__emisornombre   = emisor['nombre']       # type: ignore
         except:    
             self.__emisornombre   = emisor['rfc']          # type: ignore
         #============receptor========================    
-        self.__receptorrfc    = receptor['rfc']            # type: ignore
+        self.__receptorrfc        = receptor['rfc']            # type: ignore
         try:    
             self.__receptornombre = receptor['nombre']     # type: ignore
         except:    
@@ -62,24 +62,44 @@ class CFDI(object):
         # print(f"==> {not self.__complemento is None}")
         self.__n_conceptos    = len(self.__conceptos)
         tipo = comprobante['tipodecomprobante']            # type: ignore
-        #============pago20==========================
+        
         
         impuestos = self.__obten_impuestos(soup)
+        print(impuestos)
+        #
+        # Aquí recuperamos la composición del impuesto
+        #
+        self.__composicion = [ch.name for ch in impuestos.children if ch.name is not None]
         # print(f"Impuestos obtenidos\n{impuestos}")
         # self.__traslados      = soup.find_all(lambda e: e.name=='cfdi:traslado' and
         #                                                 sorted(e.attrs.keys())==['importe','impuesto','tasaocuota','tipofactor'])
         # self.__retenciones    = soup.find_all(lambda e: e.name=='cfdi:retencion' and 
         #                                                 sorted(e.attrs.keys())==['importe','impuesto'])
-        self.__traslados = self.__get_traslados(impuestos)
+        self.__retiva, self.__retisr = 0., 0.
 
-        self.__retenciones = self.__get_retenciones(impuestos)
+        for catego in self.__composicion:
+            if (catego.find('traslados')>=0):
+                self.__traslados = self.__get_traslados(impuestos)
+                triva, trisr, trieps  = self.__calcula_traslados() # type: ignore
+                # print(f"Traslado iva {triva}, isr {trisr}, ieps {trieps}")
+                self.__triva          = round(triva,2)
+                self.__trieps         = round(trieps,2)
+                self.__trisr          = round(trisr,2)
+
+            elif(catego.find('retenciones')>=0):
+                self.__retenciones = self.__get_retenciones(impuestos)                
+                retiva, retisr        = self.__calcula_retenciones()
+                self.__retiva         = round(retiva,2)
+                self.__retisr         = round(retisr,2)
+
         
         if(float(self.__version)==3.2):
             self.__tipo       = tipo
         else:
             tcomprobantes = {'I':'Ingreso', 'E':'Egreso', 'N':'Nomina', 'P':'Pagado'}
             self.__tipo       = tcomprobantes[tipo]
-
+        
+        #============pago20==========================
         if(self.__pago20):
         # if(self.__tipo in ['Egreso','Pagado']): # prueba
             complemento = self.__complemento
@@ -122,14 +142,7 @@ class CFDI(object):
         except:
             self.__tcambio    = 1.
 
-        triva, trisr, trieps  = self.__calcula_traslados() # type: ignore
-        # print(f"Traslado iva {triva}, isr {trisr}, ieps {trieps}")
-        self.__triva          = round(triva,2)
-        self.__trieps         = round(trieps,2)
-        self.__trisr          = round(trisr,2)
-        retiva, retisr        = self.__calcula_retenciones()
-        self.__retiva         = round(retiva,2)
-        self.__retisr         = round(retisr,2)
+        
         self.atributos = self.__get_dicc_cfdi()
 
     def __repr__(self):
@@ -209,6 +222,7 @@ class CFDI(object):
 
         rets = {k_iva : 0., k_isr : 0.}
         
+        print(self.__retenciones)
     
         for t in self.__retenciones:
             if(self.__pago20):
