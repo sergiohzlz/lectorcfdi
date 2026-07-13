@@ -63,34 +63,34 @@ class CFDI(object):
         self.__n_conceptos    = len(self.__conceptos)
         tipo = comprobante['tipodecomprobante']            # type: ignore
         
-        
+        self.__retiva, self.__retisr = 0., 0. 
+        self.__triva, self.__trieps, self.__trisr = 0., 0., 0.
         impuestos = self.__obten_impuestos(soup)
-        print(impuestos)
-        #
-        # Aquí recuperamos la composición del impuesto
-        #
-        self.__composicion = [ch.name for ch in impuestos.children if ch.name is not None]
-        # print(f"Impuestos obtenidos\n{impuestos}")
-        # self.__traslados      = soup.find_all(lambda e: e.name=='cfdi:traslado' and
-        #                                                 sorted(e.attrs.keys())==['importe','impuesto','tasaocuota','tipofactor'])
-        # self.__retenciones    = soup.find_all(lambda e: e.name=='cfdi:retencion' and 
-        #                                                 sorted(e.attrs.keys())==['importe','impuesto'])
-        self.__retiva, self.__retisr = 0., 0.
+        if(impuestos is not None):
+            # print(impuestos)
+            #
+            # Aquí recuperamos la composición del impuesto
+            #
+            self.__composicion = [ch.name for ch in impuestos.children if ch.name is not None]
+            # print(f"Impuestos obtenidos\n{impuestos}")
+            
+            # valor por defecto de la composicion
+             
 
-        for catego in self.__composicion:
-            if (catego.find('traslados')>=0):
-                self.__traslados = self.__get_traslados(impuestos)
-                triva, trisr, trieps  = self.__calcula_traslados() # type: ignore
-                # print(f"Traslado iva {triva}, isr {trisr}, ieps {trieps}")
-                self.__triva          = round(triva,2)
-                self.__trieps         = round(trieps,2)
-                self.__trisr          = round(trisr,2)
+            for catego in self.__composicion:
+                if (catego.find('traslados')>=0):
+                    self.__traslados = self.__get_traslados(impuestos)
+                    triva, trisr, trieps  = self.__calcula_traslados() # type: ignore
+                    # print(f"Traslado iva {triva}, isr {trisr}, ieps {trieps}")
+                    self.__triva          = round(triva,2)
+                    self.__trieps         = round(trieps,2)
+                    self.__trisr          = round(trisr,2)
 
-            elif(catego.find('retenciones')>=0):
-                self.__retenciones = self.__get_retenciones(impuestos)                
-                retiva, retisr        = self.__calcula_retenciones()
-                self.__retiva         = round(retiva,2)
-                self.__retisr         = round(retisr,2)
+                elif(catego.find('retenciones')>=0):
+                    self.__retenciones = self.__get_retenciones(impuestos)                
+                    retiva, retisr        = self.__calcula_retenciones()
+                    self.__retiva         = round(retiva,2)
+                    self.__retisr         = round(retisr,2)
 
         
         if(float(self.__version)==3.2):
