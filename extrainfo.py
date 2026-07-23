@@ -267,13 +267,14 @@ class CFDI(object):
         d["RFC_Receptor"] = (self.__receptorrfc     , "RFC Receptor")
         d["Receptor"]     = (self.__receptornombre  , "Receptor")
         d["Total"]        = (self.__total           , "Total")
-        d["IVA"]          = (self.__triva           , "IVA")
+        d["IVA"]          = (self.__triva           , "IVA")              # AGREGAR COLUMNAS 16, 8, 0 Y EXCENTO
         d["Ret IVA"]      = (self.__retiva          , "Ret IVA")  
         d["Forma_pago"]   = (self.__formapago       , "Forma de pago")
         d["Moneda"]       = (self.__moneda          , "Moneda")
         d["Complemento"]  = (self.__uuid_complemento, "Folio complemento")
         d["ISR"]          = (self.__trisr           , "ISR")
         d["Ret ISR"]      = (self.__retisr          , "Ret ISR")
+        d["IEPS"]         = (self.__trieps          , "IEPS")
         return d
 
     @property
